@@ -21,11 +21,7 @@
   <text x='90' y='58' fill='#f6f8fe' font-size='15' font-family='Segoe UI' font-weight='700'>CyberArk Access Review Sync</text>
   <text x='90' y='76' fill='#74c8ff' font-size='10' font-family='Segoe UI' letter-spacing='3'>INSTANCE: VAULT-REVIEW</text>
   <text x='36' y='142' fill='#74c8ff' font-size='11' font-family='Segoe UI' letter-spacing='4'>ACTIVE VIEWS</text>
-  <rect x='26' y='164' width='208' height='42' rx='14' fill='rgba(116,200,255,0.08)' stroke='rgba(116,200,255,0.16)'/>
-  <text x='42' y='190' fill='#74c8ff' font-size='12' font-family='Segoe UI' letter-spacing='2'>OVERVIEW</text>
-  <text x='42' y='236' fill='#7f92ae' font-size='12' font-family='Segoe UI' letter-spacing='2'>REVIEW QUEUE</text>
-  <text x='42' y='282' fill='#7f92ae' font-size='12' font-family='Segoe UI' letter-spacing='2'>FINDINGS</text>
-  <text x='42' y='328' fill='#7f92ae' font-size='12' font-family='Segoe UI' letter-spacing='2'>METHODOLOGY</text>
+  <text x='42' y='190' fill='#7f92ae' font-size='12' font-family='Segoe UI' letter-spacing='2'>OVERVIEW</text><text x='42' y='236' fill='#7f92ae' font-size='12' font-family='Segoe UI' letter-spacing='2'>REVIEW QUEUE</text><rect x='26' y='256' width='208' height='42' rx='14' fill='rgba(116,200,255,0.08)' stroke='rgba(116,200,255,0.16)'/><text x='42' y='282' fill='#74c8ff' font-size='12' font-family='Segoe UI' letter-spacing='2'>FINDINGS</text><text x='42' y='328' fill='#7f92ae' font-size='12' font-family='Segoe UI' letter-spacing='2'>AUDIT LOG</text>
   <rect x='260' y='0' width='1340' height='72' fill='rgba(0,0,0,0.34)'/>
   <rect x='260' y='72' width='1340' height='1' fill='rgba(255,255,255,0.08)'/>
   <rect x='294' y='20' width='220' height='30' rx='15' fill='rgba(116,200,255,0.05)' stroke='rgba(116,200,255,0.14)'/>
@@ -35,74 +31,41 @@
   <text x='1415' y='39' fill='#ffffff' text-anchor='middle' font-size='10' font-family='Segoe UI' font-weight='700' letter-spacing='3'>OPEN API DOCS</text>
   <rect x='294' y='104' width='1240' height='248' rx='28' fill='url(#hero)' stroke='rgba(120,163,214,0.18)'/>
   <text x='332' y='146' fill='#74c8ff' font-size='11' font-family='Segoe UI' letter-spacing='5'>CYBERARK ACCESS REVIEW SYNC</text>
-  <text x='332' y='212' fill='#f6f8fe' font-size='44' font-family='Georgia' font-weight='700'>Findings matrix</text>
-  <text x='332' y='248' fill='#96a9c6' font-size='21' font-family='Segoe UI'>Compact view of stale access, evidence age, and approval readiness across privileged accounts.</text>
+  <text x='332' y='212' fill='#f6f8fe' font-size='44' font-family='Georgia' font-weight='700'>Findings matrix for stale-access and evidence pressure.</text>
+  <text x='332' y='248' fill='#96a9c6' font-size='21' font-family='Segoe UI'>The records most likely to break certification quality if they stay invisible.</text>
   
   <rect x='332' y='392' width='1240' height='496' rx='24' fill='rgba(10,18,33,0.88)' stroke='rgba(120,163,214,0.16)'/>
   <text x='356' y='426' fill='#74c8ff' font-size='10' font-family='Segoe UI' letter-spacing='3'>FINDINGS MATRIX</text>
-  <text x='356' y='462' fill='#f6f8fe' font-size='24' font-family='Georgia' font-weight='700'>The compact evidence table for review operations.</text>
-  <text x='356' y='492' fill='#96a9c6' font-size='15' font-family='Segoe UI'>Fastest way to scan stale access, overdue reviews, and whether the record is still approvable.</text>
-  <rect x='356' y='520' width='1192' height='46' fill='rgba(255,255,255,0.04)'/>
-  <text x='382' y='548' fill='#7385a0' font-size='10' font-family='Segoe UI' font-weight='700' letter-spacing='3'>ACCOUNT</text>
-  <text x='828' y='548' fill='#7385a0' font-size='10' font-family='Segoe UI' font-weight='700' letter-spacing='3'>LAST ACCESS</text>
-  <text x='954' y='548' fill='#7385a0' font-size='10' font-family='Segoe UI' font-weight='700' letter-spacing='3'>REVIEW AGE</text>
-  <text x='1088' y='548' fill='#7385a0' font-size='10' font-family='Segoe UI' font-weight='700' letter-spacing='3'>EVIDENCE AGE</text>
-  <text x='1246' y='548' fill='#7385a0' font-size='10' font-family='Segoe UI' font-weight='700' letter-spacing='3'>TICKET</text>
-  <text x='1386' y='548' fill='#7385a0' font-size='10' font-family='Segoe UI' font-weight='700' letter-spacing='3'>VERDICT</text>
+  <text x='356' y='462' fill='#f6f8fe' font-size='24' font-family='Georgia' font-weight='700'>The records most likely to break certification quality if they stay invisible.</text>
+  <text x='356' y='492' fill='#96a9c6' font-size='15' font-family='Segoe UI'>Stale access, manager gaps, and evidence weakness stay together on the same review surface.</text>
   
-  <rect x='356' y='560' width='1192' height='54' fill='rgba(0,0,0,0.06)'/>
-  <text x='382' y='582' fill='#f6f8fe' font-size='14' font-family='Segoe UI' font-weight='700'>QA-ADMIN-ORPHANED</text>
-  <text x='382' y='600' fill='#96a9c6' font-size='11' font-family='Segoe UI'>Unassigned</text>
-  <text x='842' y='592' fill='#f6f8fe' font-size='12' font-family='Segoe UI'>204d</text>
-  <text x='972' y='592' fill='#f6f8fe' font-size='12' font-family='Segoe UI'>210d</text>
-  <text x='1108' y='592' fill='#f6f8fe' font-size='12' font-family='Segoe UI'>0d</text>
-  <text x='1266' y='592' fill='#f6f8fe' font-size='12' font-family='Segoe UI'>No</text>
-  <text x='1408' y='592' fill='#ff7987' font-size='10' font-family='Segoe UI' font-weight='700' letter-spacing='2'>CRITICAL</text>
+  <rect x='356' y='548' width='1192' height='112' rx='18' fill='rgba(255,255,255,0.03)' stroke='rgba(255,255,255,0.05)'/>
+  <text x='382' y='578' fill='#f6f8fe' font-size='20' font-family='Segoe UI' font-weight='700'>QA-ADMIN-ORPHANED</text>
+  <text x='382' y='600' fill='#96a9c6' font-size='12' font-family='Segoe UI'>Unassigned · QA-Shared-Admins · medium</text>
+  <text x='382' y='626' fill='#cfe0f7' font-size='12' font-family='Segoe UI'>Last access 204d · review age 210d · evidence age 0d</text>
+  <text x='1496' y='582' text-anchor='end' fill='#ff7987' font-size='10' font-family='Segoe UI' font-weight='700' letter-spacing='2'>CRITICAL</text>
+  <text x='1496' y='626' text-anchor='end' fill='#f6f8fe' font-size='14' font-family='Segoe UI'>Ticket: No · Manager: No</text>
             
-  <rect x='356' y='614' width='1192' height='54' fill='rgba(255,255,255,0.02)'/>
-  <text x='382' y='636' fill='#f6f8fe' font-size='14' font-family='Segoe UI' font-weight='700'>FIN-ORACLE-ROOT</text>
-  <text x='382' y='654' fill='#96a9c6' font-size='11' font-family='Segoe UI'>Finance Infrastructure</text>
-  <text x='842' y='646' fill='#f6f8fe' font-size='12' font-family='Segoe UI'>142d</text>
-  <text x='972' y='646' fill='#f6f8fe' font-size='12' font-family='Segoe UI'>101d</text>
-  <text x='1108' y='646' fill='#f6f8fe' font-size='12' font-family='Segoe UI'>127d</text>
-  <text x='1266' y='646' fill='#f6f8fe' font-size='12' font-family='Segoe UI'>No</text>
-  <text x='1408' y='646' fill='#ff7987' font-size='10' font-family='Segoe UI' font-weight='700' letter-spacing='2'>CRITICAL</text>
+  <rect x='356' y='678' width='1192' height='112' rx='18' fill='rgba(255,255,255,0.03)' stroke='rgba(255,255,255,0.05)'/>
+  <text x='382' y='708' fill='#f6f8fe' font-size='20' font-family='Segoe UI' font-weight='700'>FIN-ORACLE-ROOT</text>
+  <text x='382' y='730' fill='#96a9c6' font-size='12' font-family='Segoe UI'>Finance Infrastructure · Finance-Prod-Privileged · critical</text>
+  <text x='382' y='756' fill='#cfe0f7' font-size='12' font-family='Segoe UI'>Last access 142d · review age 101d · evidence age 127d</text>
+  <text x='1496' y='712' text-anchor='end' fill='#ff7987' font-size='10' font-family='Segoe UI' font-weight='700' letter-spacing='2'>CRITICAL</text>
+  <text x='1496' y='756' text-anchor='end' fill='#f6f8fe' font-size='14' font-family='Segoe UI'>Ticket: No · Manager: No</text>
             
-  <rect x='356' y='668' width='1192' height='54' fill='rgba(0,0,0,0.06)'/>
-  <text x='382' y='690' fill='#f6f8fe' font-size='14' font-family='Segoe UI' font-weight='700'>DEVOPS-BREAKGLASS</text>
-  <text x='382' y='708' fill='#96a9c6' font-size='11' font-family='Segoe UI'>Platform Reliability</text>
-  <text x='842' y='700' fill='#f6f8fe' font-size='12' font-family='Segoe UI'>87d</text>
-  <text x='972' y='700' fill='#f6f8fe' font-size='12' font-family='Segoe UI'>95d</text>
-  <text x='1108' y='700' fill='#f6f8fe' font-size='12' font-family='Segoe UI'>0d</text>
-  <text x='1266' y='700' fill='#f6f8fe' font-size='12' font-family='Segoe UI'>No</text>
-  <text x='1408' y='700' fill='#ff7987' font-size='10' font-family='Segoe UI' font-weight='700' letter-spacing='2'>CRITICAL</text>
+  <rect x='356' y='808' width='1192' height='112' rx='18' fill='rgba(255,255,255,0.03)' stroke='rgba(255,255,255,0.05)'/>
+  <text x='382' y='838' fill='#f6f8fe' font-size='20' font-family='Segoe UI' font-weight='700'>DEVOPS-BREAKGLASS</text>
+  <text x='382' y='860' fill='#96a9c6' font-size='12' font-family='Segoe UI'>Platform Reliability · Legacy-Infra-Breakglass · high</text>
+  <text x='382' y='886' fill='#cfe0f7' font-size='12' font-family='Segoe UI'>Last access 87d · review age 95d · evidence age 0d</text>
+  <text x='1496' y='842' text-anchor='end' fill='#ff7987' font-size='10' font-family='Segoe UI' font-weight='700' letter-spacing='2'>CRITICAL</text>
+  <text x='1496' y='886' text-anchor='end' fill='#f6f8fe' font-size='14' font-family='Segoe UI'>Ticket: No · Manager: No</text>
             
-  <rect x='356' y='722' width='1192' height='54' fill='rgba(255,255,255,0.02)'/>
-  <text x='382' y='744' fill='#f6f8fe' font-size='14' font-family='Segoe UI' font-weight='700'>SAP-BASIS-VENDOR</text>
-  <text x='382' y='762' fill='#96a9c6' font-size='11' font-family='Segoe UI'>ERP Operations</text>
-  <text x='842' y='754' fill='#f6f8fe' font-size='12' font-family='Segoe UI'>55d</text>
-  <text x='972' y='754' fill='#f6f8fe' font-size='12' font-family='Segoe UI'>63d</text>
-  <text x='1108' y='754' fill='#f6f8fe' font-size='12' font-family='Segoe UI'>41d</text>
-  <text x='1266' y='754' fill='#f6f8fe' font-size='12' font-family='Segoe UI'>Yes</text>
-  <text x='1408' y='754' fill='#49d79e' font-size='10' font-family='Segoe UI' font-weight='700' letter-spacing='2'>HEALTHY</text>
-            
-  <rect x='356' y='776' width='1192' height='54' fill='rgba(0,0,0,0.06)'/>
-  <text x='382' y='798' fill='#f6f8fe' font-size='14' font-family='Segoe UI' font-weight='700'>SRE-K8S-SHARED</text>
-  <text x='382' y='816' fill='#96a9c6' font-size='11' font-family='Segoe UI'>Developer Platform</text>
-  <text x='842' y='808' fill='#f6f8fe' font-size='12' font-family='Segoe UI'>9d</text>
-  <text x='972' y='808' fill='#f6f8fe' font-size='12' font-family='Segoe UI'>34d</text>
-  <text x='1108' y='808' fill='#f6f8fe' font-size='12' font-family='Segoe UI'>14d</text>
-  <text x='1266' y='808' fill='#f6f8fe' font-size='12' font-family='Segoe UI'>Yes</text>
-  <text x='1408' y='808' fill='#49d79e' font-size='10' font-family='Segoe UI' font-weight='700' letter-spacing='2'>HEALTHY</text>
-            
-  <rect x='356' y='830' width='1192' height='54' fill='rgba(255,255,255,0.02)'/>
-  <text x='382' y='852' fill='#f6f8fe' font-size='14' font-family='Segoe UI' font-weight='700'>EMEA-DOMAIN-ADMIN</text>
-  <text x='382' y='870' fill='#96a9c6' font-size='11' font-family='Segoe UI'>Identity Operations</text>
-  <text x='842' y='862' fill='#f6f8fe' font-size='12' font-family='Segoe UI'>21d</text>
-  <text x='972' y='862' fill='#f6f8fe' font-size='12' font-family='Segoe UI'>28d</text>
-  <text x='1108' y='862' fill='#f6f8fe' font-size='12' font-family='Segoe UI'>19d</text>
-  <text x='1266' y='862' fill='#f6f8fe' font-size='12' font-family='Segoe UI'>Yes</text>
-  <text x='1408' y='862' fill='#49d79e' font-size='10' font-family='Segoe UI' font-weight='700' letter-spacing='2'>HEALTHY</text>
+  <rect x='356' y='938' width='1192' height='112' rx='18' fill='rgba(255,255,255,0.03)' stroke='rgba(255,255,255,0.05)'/>
+  <text x='382' y='968' fill='#f6f8fe' font-size='20' font-family='Segoe UI' font-weight='700'>SAP-BASIS-VENDOR</text>
+  <text x='382' y='990' fill='#96a9c6' font-size='12' font-family='Segoe UI'>ERP Operations · Vendor-Maintenance · medium</text>
+  <text x='382' y='1016' fill='#cfe0f7' font-size='12' font-family='Segoe UI'>Last access 55d · review age 63d · evidence age 41d</text>
+  <text x='1496' y='972' text-anchor='end' fill='#49d79e' font-size='10' font-family='Segoe UI' font-weight='700' letter-spacing='2'>HEALTHY</text>
+  <text x='1496' y='1016' text-anchor='end' fill='#f6f8fe' font-size='14' font-family='Segoe UI'>Ticket: Yes · Manager: Yes</text>
             
     
 </svg>

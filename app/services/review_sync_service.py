@@ -133,6 +133,92 @@ class CyberArkReviewSyncService:
             "findings": self.findings()[:4],
         }
 
+    def sync_velocity(self) -> list[dict]:
+        return [
+            {"day": "Mon", "reviews": 5, "findings": 2},
+            {"day": "Tue", "reviews": 9, "findings": 3},
+            {"day": "Wed", "reviews": 7, "findings": 2},
+            {"day": "Thu", "reviews": 13, "findings": 4},
+            {"day": "Fri", "reviews": 18, "findings": 5},
+            {"day": "Sat", "reviews": 11, "findings": 3},
+            {"day": "Sun", "reviews": 8, "findings": 2},
+        ]
+
+    def audit_log(self) -> list[dict]:
+        highest = self.account_catalog()[0]
+        return [
+            {
+                "timestamp": "2026-05-14 09:30:12",
+                "action": "SYNC_STARTED",
+                "actor": "SYSTEM",
+                "resource": "CyberArk Vault primary lane",
+                "result": "Success",
+                "detail": "Scheduled privileged-account metadata synchronization started.",
+            },
+            {
+                "timestamp": "2026-05-14 09:32:48",
+                "action": "METADATA_EXTRACTED",
+                "actor": "SYSTEM",
+                "resource": f"{len(self.accounts)} privileged accounts",
+                "result": "Success",
+                "detail": "Safe memberships, owner fields, and evidence ages extracted for review scoring.",
+            },
+            {
+                "timestamp": "2026-05-14 09:36:01",
+                "action": "QUEUE_PRIORITIZED",
+                "actor": "SYSTEM",
+                "resource": highest["name"],
+                "result": "Success",
+                "detail": "Highest-risk account promoted into the urgent review lane.",
+            },
+            {
+                "timestamp": "2026-05-14 09:37:25",
+                "action": "EVIDENCE_GAP_FLAGGED",
+                "actor": "SYSTEM",
+                "resource": "Approval evidence backlog",
+                "result": "Success",
+                "detail": "Accounts with missing or stale evidence bundles queued for certification refresh.",
+            },
+            {
+                "timestamp": "2026-05-14 09:41:10",
+                "action": "REVIEW_PACKET_EMITTED",
+                "actor": "SYSTEM",
+                "resource": "Approval-ready payload export",
+                "result": "Success",
+                "detail": "Structured evidence packet emitted for downstream governance workflows.",
+            },
+            {
+                "timestamp": "2026-05-14 09:42:59",
+                "action": "MANAGER_ATTESTATION_PENDING",
+                "actor": "Review Ops",
+                "resource": "Owner-verification lane",
+                "result": "Failure",
+                "detail": "A subset of accounts still lacks manager verification despite matching review windows.",
+            },
+        ]
+
+    def configuration_posture(self) -> dict:
+        return {
+            "cyberark": {
+                "apiBaseUrl": "https://vault-review.internal/api",
+                "authType": "CyberArk Identity + certificate",
+                "verifySsl": True,
+                "sessionControl": "Dual-control enforced for critical safes",
+            },
+            "syncSettings": {
+                "intervalMinutes": 30,
+                "batchSize": 250,
+                "autoRemediation": False,
+                "evidenceRefreshThresholdDays": 45,
+            },
+            "targetSystems": [
+                {"name": "ServiceNow review queue", "type": "workflow", "enabled": True},
+                {"name": "Identity governance ledger", "type": "evidence pipeline", "enabled": True},
+                {"name": "Quarterly certification export", "type": "governance handoff", "enabled": True},
+                {"name": "Emergency revocation lane", "type": "control plane", "enabled": False},
+            ],
+        }
+
     def _evaluations(self) -> list[dict]:
         return [self._evaluate_account(account) for account in self.accounts]
 

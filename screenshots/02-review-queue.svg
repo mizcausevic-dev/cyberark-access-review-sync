@@ -21,11 +21,7 @@
   <text x='90' y='58' fill='#f6f8fe' font-size='15' font-family='Segoe UI' font-weight='700'>CyberArk Access Review Sync</text>
   <text x='90' y='76' fill='#74c8ff' font-size='10' font-family='Segoe UI' letter-spacing='3'>INSTANCE: VAULT-REVIEW</text>
   <text x='36' y='142' fill='#74c8ff' font-size='11' font-family='Segoe UI' letter-spacing='4'>ACTIVE VIEWS</text>
-  <rect x='26' y='164' width='208' height='42' rx='14' fill='rgba(116,200,255,0.08)' stroke='rgba(116,200,255,0.16)'/>
-  <text x='42' y='190' fill='#74c8ff' font-size='12' font-family='Segoe UI' letter-spacing='2'>OVERVIEW</text>
-  <text x='42' y='236' fill='#7f92ae' font-size='12' font-family='Segoe UI' letter-spacing='2'>REVIEW QUEUE</text>
-  <text x='42' y='282' fill='#7f92ae' font-size='12' font-family='Segoe UI' letter-spacing='2'>FINDINGS</text>
-  <text x='42' y='328' fill='#7f92ae' font-size='12' font-family='Segoe UI' letter-spacing='2'>METHODOLOGY</text>
+  <text x='42' y='190' fill='#7f92ae' font-size='12' font-family='Segoe UI' letter-spacing='2'>OVERVIEW</text><rect x='26' y='210' width='208' height='42' rx='14' fill='rgba(116,200,255,0.08)' stroke='rgba(116,200,255,0.16)'/><text x='42' y='236' fill='#74c8ff' font-size='12' font-family='Segoe UI' letter-spacing='2'>REVIEW QUEUE</text><text x='42' y='282' fill='#7f92ae' font-size='12' font-family='Segoe UI' letter-spacing='2'>FINDINGS</text><text x='42' y='328' fill='#7f92ae' font-size='12' font-family='Segoe UI' letter-spacing='2'>AUDIT LOG</text>
   <rect x='260' y='0' width='1340' height='72' fill='rgba(0,0,0,0.34)'/>
   <rect x='260' y='72' width='1340' height='1' fill='rgba(255,255,255,0.08)'/>
   <rect x='294' y='20' width='220' height='30' rx='15' fill='rgba(116,200,255,0.05)' stroke='rgba(116,200,255,0.14)'/>
@@ -35,12 +31,12 @@
   <text x='1415' y='39' fill='#ffffff' text-anchor='middle' font-size='10' font-family='Segoe UI' font-weight='700' letter-spacing='3'>OPEN API DOCS</text>
   <rect x='294' y='104' width='1240' height='248' rx='28' fill='url(#hero)' stroke='rgba(120,163,214,0.18)'/>
   <text x='332' y='146' fill='#74c8ff' font-size='11' font-family='Segoe UI' letter-spacing='5'>CYBERARK ACCESS REVIEW SYNC</text>
-  <text x='332' y='212' fill='#f6f8fe' font-size='44' font-family='Georgia' font-weight='700'>Review queue</text>
-  <text x='332' y='248' fill='#96a9c6' font-size='21' font-family='Segoe UI'>The privileged accounts most likely to need urgent review, ownership cleanup, or evidence refresh.</text>
+  <text x='332' y='212' fill='#f6f8fe' font-size='44' font-family='Georgia' font-weight='700'>Review queue for destructive-access exposure.</text>
+  <text x='332' y='248' fill='#96a9c6' font-size='21' font-family='Segoe UI'>The servers most likely to need containment or human review first.</text>
   
   <rect x='332' y='392' width='1240' height='496' rx='24' fill='rgba(10,18,33,0.88)' stroke='rgba(120,163,214,0.16)'/>
   <text x='356' y='426' fill='#74c8ff' font-size='10' font-family='Segoe UI' letter-spacing='3'>REVIEW QUEUE</text>
-  <text x='356' y='462' fill='#f6f8fe' font-size='24' font-family='Georgia' font-weight='700'>Accounts that should be forced through review first.</text>
+  <text x='356' y='462' fill='#f6f8fe' font-size='24' font-family='Georgia' font-weight='700'>The servers most likely to need containment or human review first.</text>
   <text x='356' y='492' fill='#96a9c6' font-size='15' font-family='Segoe UI'>Stale, weakly owned, or evidence-thin privileged accounts rise here.</text>
         
   <rect x='356' y='530' width='1192' height='104' rx='18' fill='rgba(4,9,18,0.58)' stroke='rgba(255,255,255,0.05)'/>

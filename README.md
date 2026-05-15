@@ -22,7 +22,7 @@ CyberArk is usually very good at vaulting and protecting privileged access. The 
 ![Overview](./screenshots/01-overview.svg)
 ![Review queue](./screenshots/02-review-queue.svg)
 ![Findings matrix](./screenshots/03-findings-matrix.svg)
-![Methodology](./screenshots/04-methodology.svg)
+![Audit log](./screenshots/04-audit-log.svg)
 
 ## What it includes
 
@@ -31,6 +31,8 @@ CyberArk is usually very good at vaulting and protecting privileged access. The 
 - risk scoring for stale access, overdue reviews, approval evidence age, and owner gaps
 - urgent review queue for `watch` and `critical` accounts
 - findings matrix for ticket state, manager verification, and evidence freshness
+- audit-evidence surface for sync actions, queue promotions, and review-event replay
+- configuration posture page for vault context, sync cadence, and downstream integration targets
 - approval-ready payload examples for downstream review or governance systems
 - SVG proof assets generated from the same service state
 - unit tests, smoke checks, and GitHub Actions CI
@@ -49,6 +51,8 @@ Open:
 - [http://127.0.0.1:4961/](http://127.0.0.1:4961/)
 - [http://127.0.0.1:4961/review-queue](http://127.0.0.1:4961/review-queue)
 - [http://127.0.0.1:4961/findings](http://127.0.0.1:4961/findings)
+- [http://127.0.0.1:4961/audit-log](http://127.0.0.1:4961/audit-log)
+- [http://127.0.0.1:4961/settings](http://127.0.0.1:4961/settings)
 - [http://127.0.0.1:4961/methodology](http://127.0.0.1:4961/methodology)
 - [http://127.0.0.1:4961/docs](http://127.0.0.1:4961/docs)
 

@@ -18,6 +18,8 @@ def main() -> None:
         "/",
         "/review-queue",
         "/findings",
+        "/audit-log",
+        "/settings",
         "/methodology",
         "/api-summary",
         "/api/dashboard/summary",

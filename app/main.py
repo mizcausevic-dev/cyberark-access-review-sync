@@ -5,10 +5,12 @@ from fastapi.responses import HTMLResponse
 
 from app.render import (
     render_api_summary,
+    render_audit_log,
     render_findings_matrix,
     render_methodology,
     render_overview,
     render_review_queue,
+    render_settings,
 )
 from app.services.review_sync_service import build_service
 
@@ -37,6 +39,16 @@ def review_queue() -> str:
 @app.get("/findings", response_class=HTMLResponse)
 def findings() -> str:
     return render_findings_matrix()
+
+
+@app.get("/audit-log", response_class=HTMLResponse)
+def audit_log() -> str:
+    return render_audit_log()
+
+
+@app.get("/settings", response_class=HTMLResponse)
+def settings() -> str:
+    return render_settings()
 
 
 @app.get("/methodology", response_class=HTMLResponse)

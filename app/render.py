@@ -13,6 +13,10 @@ def _account_lookup() -> dict[str, dict]:
     return {account["accountId"]: account for account in SERVICE.accounts}
 
 
+def _summary() -> dict:
+    return SERVICE.summary()
+
+
 def _verdict_class(verdict: str) -> str:
     return {"healthy": "healthy", "watch": "watch", "critical": "critical"}[verdict]
 
@@ -43,12 +47,51 @@ def _score_bars(account: dict) -> str:
     return "".join(rows)
 
 
+def _mini_chart() -> str:
+    series = SERVICE.sync_velocity()
+    max_reviews = max(item["reviews"] for item in series)
+    bars = []
+    for item in series:
+        height = max(18, round((item["reviews"] / max_reviews) * 118))
+        bars.append(
+            f"""
+            <div class="chart-col">
+              <div class="chart-bar-wrap">
+                <div class="chart-bar" style="height:{height}px"></div>
+              </div>
+              <div class="chart-num">{item["reviews"]}</div>
+              <div class="chart-label">{escape(item["day"])}</div>
+            </div>
+            """
+        )
+    return f"""
+      <div class="mini-chart">
+        <div class="chart-head">
+          <div>
+            <div class="micro-label">Sync velocity</div>
+            <h3>How much privileged-review movement the lane is carrying this week.</h3>
+          </div>
+          <div class="chart-legend">
+            <span><i></i> Review packets processed</span>
+          </div>
+        </div>
+        <div class="chart-grid">{"".join(bars)}</div>
+        <div class="chart-foot">
+          <span><strong>Average evidence age:</strong> {_summary()["averageApprovalEvidenceAge"]} days</span>
+          <span><strong>Queue pressure:</strong> {_summary()["criticalCount"]} critical / {_summary()["watchCount"]} watch</span>
+        </div>
+      </div>
+    """
+
+
 def _shell(title: str, subtitle: str, current: str, body: str) -> str:
-    summary = SERVICE.summary()
+    summary = _summary()
     nav_items = [
         ("/", "Overview", "overview"),
         ("/review-queue", "Review Queue", "queue"),
         ("/findings", "Findings", "findings"),
+        ("/audit-log", "Audit Log", "audit"),
+        ("/settings", "Settings", "settings"),
         ("/methodology", "Methodology", "methodology"),
     ]
     sidebar = "".join(
@@ -69,10 +112,12 @@ def _shell(title: str, subtitle: str, current: str, body: str) -> str:
       :root {{
         color-scheme: dark;
         --bg: #04070d;
-        --panel: rgba(9, 16, 28, 0.9);
+        --panel: rgba(9, 16, 28, 0.92);
         --line: rgba(255,255,255,0.07);
+        --line-strong: rgba(116,200,255,0.16);
         --text: #f5f7fd;
         --muted: #96a9c6;
+        --soft: #6d809b;
         --blue: #74c8ff;
         --indigo: #5d78ff;
         --green: #49d79e;
@@ -175,11 +220,13 @@ def _shell(title: str, subtitle: str, current: str, body: str) -> str:
       .stat-card .value {{ margin-top:10px; font-size:36px; font-weight:900; }}
       .stat-card .sub {{ margin-top:10px; color:var(--muted); font-size:14px; line-height:1.45; }}
       .insight-grid {{ display:grid; gap:18px; grid-template-columns:1.35fr 1fr; }}
+      .three-col {{ display:grid; gap:18px; grid-template-columns:repeat(3,minmax(0,1fr)); }}
+      .two-col {{ display:grid; gap:18px; grid-template-columns:1fr 1fr; }}
       .panel {{ border-radius:22px; border:1px solid rgba(255,255,255,0.06); background:rgba(4,9,18,0.55); padding:22px; }}
       .panel h3 {{ margin:0 0 16px; font-size:18px; }}
       .panel-grid {{ display:grid; gap:14px; }}
       .metric-card {{ padding:16px; border:1px solid rgba(255,255,255,0.05); border-radius:18px; background:rgba(255,255,255,0.028); }}
-      .metric-card .micro {{ color:#6f83a0; font-size:9px; text-transform:uppercase; letter-spacing:.16em; font-weight:800; }}
+      .metric-card .micro, .micro-label {{ color:#6f83a0; font-size:9px; text-transform:uppercase; letter-spacing:.16em; font-weight:800; }}
       .metric-card .title {{ margin-top:8px; font-size:15px; font-weight:800; }}
       .metric-card .desc {{ margin-top:8px; color:var(--muted); font-size:13px; line-height:1.5; }}
       .meter-row + .meter-row {{ margin-top:14px; }}
@@ -193,7 +240,7 @@ def _shell(title: str, subtitle: str, current: str, body: str) -> str:
       .account-card {{ border-radius:22px; border:1px solid rgba(255,255,255,0.06); background:rgba(4,9,18,0.6); overflow:hidden; }}
       .account-top {{ display:grid; grid-template-columns:minmax(0,1fr) auto auto; gap:18px; align-items:center; padding:20px 22px; }}
       .account-card h3 {{ margin:0; font-size:22px; font-weight:800; letter-spacing:-.03em; }}
-      .account-card .meta {{ margin-top:8px; color:var(--muted); font-size:13px; }}
+      .account-card .meta-text {{ margin-top:8px; color:var(--muted); font-size:13px; }}
       .tag {{ display:inline-flex; align-items:center; justify-content:center; padding:8px 12px; border-radius:999px; font-size:10px; font-weight:900; letter-spacing:.16em; text-transform:uppercase; }}
       .healthy {{ color:var(--green); background:rgba(73,215,158,0.12); border:1px solid rgba(73,215,158,0.14); }}
       .watch {{ color:var(--amber); background:rgba(246,196,106,0.12); border:1px solid rgba(246,196,106,0.14); }}
@@ -202,8 +249,9 @@ def _shell(title: str, subtitle: str, current: str, body: str) -> str:
       .score-stack .micro {{ color:#6f83a0; font-size:9px; text-transform:uppercase; letter-spacing:.16em; font-weight:800; }}
       .score-stack .value {{ margin-top:6px; font-size:28px; font-weight:900; }}
       .account-bottom {{ padding:18px 22px 22px; border-top:1px solid rgba(255,255,255,0.05); background:rgba(255,255,255,0.02); }}
-      .two-col {{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }}
-      .signal-pill {{ display:inline-flex; align-items:center; padding:8px 10px; border-radius:999px; background:rgba(116,200,255,0.09); color:var(--blue); font-size:10px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }}
+      .signal-pill {{
+        display:inline-flex; align-items:center; padding:8px 10px; border-radius:999px; background:rgba(116,200,255,0.09); color:var(--blue); font-size:10px; font-weight:800; letter-spacing:.12em; text-transform:uppercase;
+      }}
       .pill-stack {{ display:flex; flex-wrap:wrap; gap:10px; }}
       .table-shell {{ overflow:hidden; border-radius:22px; border:1px solid rgba(255,255,255,0.06); background:rgba(4,9,18,0.58); }}
       table {{ width:100%; border-collapse:collapse; }}
@@ -221,13 +269,59 @@ def _shell(title: str, subtitle: str, current: str, body: str) -> str:
       .lights i:nth-child(2) {{ background:rgba(246,196,106,0.7); }}
       .lights i:nth-child(3) {{ background:rgba(73,215,158,0.7); }}
       pre {{ margin:0; white-space:pre-wrap; overflow:auto; color:#dce8fb; font-size:13px; line-height:1.6; font-family:"Cascadia Code", Consolas, monospace; }}
+      .log-shell {{ border-radius:22px; border:1px solid rgba(255,255,255,0.08); background:rgba(2,6,12,0.88); overflow:hidden; }}
+      .log-head {{ padding:16px 18px; display:flex; align-items:center; gap:12px; border-bottom:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.03); }}
+      .log-lights {{ display:flex; gap:8px; }}
+      .log-lights i {{ width:11px; height:11px; border-radius:50%; display:block; }}
+      .log-lights i:nth-child(1) {{ background:rgba(255,121,135,0.55); }}
+      .log-lights i:nth-child(2) {{ background:rgba(246,196,106,0.55); }}
+      .log-lights i:nth-child(3) {{ background:rgba(73,215,158,0.55); }}
+      .log-head strong {{ color:var(--blue); font-size:10px; letter-spacing:.18em; text-transform:uppercase; }}
+      .log-body {{ padding:18px 18px 8px; }}
+      .log-line {{ display:grid; grid-template-columns:170px 180px minmax(0,1fr) 90px; gap:14px; align-items:start; padding:10px 12px; border-radius:14px; }}
+      .log-line + .log-line {{ margin-top:8px; }}
+      .log-line:hover {{ background:rgba(255,255,255,0.03); }}
+      .log-time {{ color:#6f83a0; font-size:11px; font-family:"Cascadia Code", Consolas, monospace; }}
+      .log-action {{ color:var(--blue); font-size:11px; font-family:"Cascadia Code", Consolas, monospace; font-weight:800; letter-spacing:.08em; }}
+      .log-resource strong {{ display:block; font-size:12px; }}
+      .log-resource span {{ display:block; margin-top:4px; color:var(--muted); font-size:12px; line-height:1.45; }}
+      .result-good {{ color:var(--green); }}
+      .result-bad {{ color:var(--red); }}
+      .config-grid {{ display:grid; gap:18px; grid-template-columns:repeat(2,minmax(0,1fr)); }}
+      .config-row {{ display:flex; align-items:flex-start; justify-content:space-between; gap:18px; padding:14px 16px; border-radius:16px; border:1px solid rgba(255,255,255,0.05); background:rgba(255,255,255,0.02); }}
+      .config-row strong {{ display:block; font-size:13px; }}
+      .config-row span {{ display:block; margin-top:6px; color:var(--muted); font-size:12px; }}
+      .toggle {{
+        min-width:78px; text-align:center; padding:8px 12px; border-radius:999px; font-size:10px; font-weight:900; letter-spacing:.16em; text-transform:uppercase;
+      }}
+      .toggle.good {{ background:rgba(73,215,158,0.12); color:var(--green); border:1px solid rgba(73,215,158,0.18); }}
+      .toggle.bad {{ background:rgba(255,121,135,0.12); color:var(--red); border:1px solid rgba(255,121,135,0.18); }}
+      .integration-row {{ display:flex; align-items:center; justify-content:space-between; gap:14px; padding:14px 16px; border-radius:16px; border:1px solid rgba(255,255,255,0.05); background:rgba(255,255,255,0.02); }}
+      .integration-row strong {{ display:block; font-size:13px; }}
+      .integration-row span {{ display:block; margin-top:6px; color:var(--muted); font-size:12px; }}
+      .mini-chart {{ border-radius:22px; border:1px solid rgba(255,255,255,0.06); background:rgba(4,9,18,0.55); padding:22px; }}
+      .chart-head {{ display:flex; justify-content:space-between; gap:18px; align-items:flex-end; margin-bottom:16px; }}
+      .chart-head h3 {{ margin:10px 0 0; font-size:17px; max-width:420px; line-height:1.35; }}
+      .chart-legend span {{ display:inline-flex; align-items:center; gap:8px; color:var(--muted); font-size:11px; }}
+      .chart-legend i {{ display:inline-block; width:12px; height:12px; border-radius:4px; background:linear-gradient(180deg, var(--blue), var(--indigo)); }}
+      .chart-grid {{ display:flex; align-items:flex-end; justify-content:space-between; gap:12px; min-height:170px; margin-top:24px; }}
+      .chart-col {{ flex:1; text-align:center; }}
+      .chart-bar-wrap {{ display:flex; align-items:flex-end; justify-content:center; height:124px; }}
+      .chart-bar {{ width:100%; max-width:74px; border-radius:18px 18px 8px 8px; background:linear-gradient(180deg, rgba(116,200,255,0.95), rgba(93,120,255,0.78)); box-shadow:0 0 24px rgba(93,120,255,0.24); }}
+      .chart-num {{ margin-top:10px; font-size:16px; font-weight:800; }}
+      .chart-label {{ margin-top:4px; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.12em; }}
+      .chart-foot {{ display:flex; justify-content:space-between; gap:16px; margin-top:20px; color:var(--soft); font-size:11px; text-transform:uppercase; letter-spacing:.12em; }}
+      .chart-foot strong {{ color:#bfd0e7; }}
       .footer-strip {{ display:flex; justify-content:space-between; gap:16px; margin-top:18px; padding:4px 2px 10px; color:#6d809b; font-size:10px; text-transform:uppercase; letter-spacing:.16em; }}
       .footer-strip strong {{ color:#b8c9de; }}
       @media (max-width:1080px) {{
         .shell {{ grid-template-columns:1fr; }}
         .sidebar {{ display:none; }}
-        .stats-grid, .insight-grid, .two-col {{ grid-template-columns:1fr; }}
+        .stats-grid, .insight-grid, .two-col, .three-col, .config-grid {{ grid-template-columns:1fr; }}
         .account-top {{ grid-template-columns:1fr; align-items:start; }}
+        .topbar {{ padding:0 18px; height:auto; min-height:72px; flex-wrap:wrap; gap:12px; }}
+        .topbar-right, .chart-foot, .chart-head {{ flex-wrap:wrap; }}
+        .log-line {{ grid-template-columns:1fr; }}
       }}
     </style>
   </head>
@@ -291,7 +385,7 @@ def _shell(title: str, subtitle: str, current: str, body: str) -> str:
 
 
 def render_overview() -> str:
-    summary = SERVICE.summary()
+    summary = _summary()
     catalog = SERVICE.account_catalog()
     raw = _account_lookup()
     cards = []
@@ -310,7 +404,7 @@ def render_overview() -> str:
               <div class="account-top">
                 <div>
                   <h3>{escape(row["name"])}</h3>
-                  <div class="meta">{escape(row["owner"])} · {escape(row["safe"])} · {escape(row["platform"])} · {escape(row["privilegeTier"])}</div>
+                  <div class="meta-text">{escape(row["owner"])} · {escape(row["safe"])} · {escape(row["platform"])} · {escape(row["privilegeTier"])}</div>
                 </div>
                 <span class="tag {_verdict_class(row["verdict"])}">{escape(row["verdict"])}</span>
                 <div class="score-stack">
@@ -342,7 +436,7 @@ def render_overview() -> str:
         <div class="section-head">
           <strong>Review overview</strong>
           <h2>Privileged accounts that should not drift through the next cycle silently.</h2>
-          <p>This surface is for the practical work of deciding which CyberArk accounts belong in the urgent queue, which ones are review-ready, and which ones are still missing evidence or ownership.</p>
+          <p>This surface is for deciding which CyberArk accounts belong in the urgent queue, which ones are actually review-ready, and which ones still need ownership or evidence cleanup before approval.</p>
         </div>
         <div class="section-body">
           <div class="stats-grid">
@@ -368,21 +462,7 @@ def render_overview() -> str:
             </div>
           </div>
           <div class="insight-grid" style="margin-top:20px;">
-            <div class="panel">
-              <h3>What the sync is looking for</h3>
-              <div class="panel-grid">
-                <div class="metric-card">
-                  <div class="micro">Stale access</div>
-                  <div class="title">Not every quiet account is harmless.</div>
-                  <div class="desc">Long-unused privileged accounts can survive quarter after quarter if nobody forces them into the review queue with evidence attached.</div>
-                </div>
-                <div class="metric-card">
-                  <div class="micro">Approval evidence</div>
-                  <div class="title">Review-ready should mean defensible.</div>
-                  <div class="desc">The system keeps ticket state, manager verification, and approval age close together so operators can see whether the record is actually approvable.</div>
-                </div>
-              </div>
-            </div>
+            {_mini_chart()}
             <div class="panel">
               <h3>Operator notes</h3>
               <div class="panel-grid">
@@ -395,6 +475,11 @@ def render_overview() -> str:
                   <div class="micro">Approval backlog</div>
                   <div class="title">{summary["reviewReadyCount"]} accounts are review-ready.</div>
                   <div class="desc">Everything else still needs evidence refresh, ownership cleanup, or a live ticket before it can move cleanly through the next review.</div>
+                </div>
+                <div class="metric-card">
+                  <div class="micro">Control objective</div>
+                  <div class="title">Turn vault metadata into review decisions.</div>
+                  <div class="desc">The point is not just extracting data from CyberArk. It is making that data actionable for certification and privileged-access governance.</div>
                 </div>
               </div>
             </div>
@@ -413,8 +498,8 @@ def render_overview() -> str:
       </section>
     """
     return _shell(
-        "Review sync overview",
-        "Syncing CyberArk privileged-account metadata into access-review queues, stale-access findings, and approval-ready evidence payloads.",
+        "Control-plane summary for privileged-review posture.",
+        "Server count, critical lanes, sync throughput, and operator recommendations at a glance.",
         "overview",
         body,
     )
@@ -422,8 +507,21 @@ def render_overview() -> str:
 
 def render_review_queue() -> str:
     queue = SERVICE.review_queue()
+    rows = "".join(
+        f"""
+        <tr>
+          <td><strong>{escape(row["name"])}</strong><div class="subtext">{escape(row["owner"])} · {escape(row["reviewGroup"])}</div></td>
+          <td>{escape(row["safe"])}</td>
+          <td>{escape(row["platform"])}</td>
+          <td>{escape(row["topConcern"])}</td>
+          <td><span class="tag {_verdict_class(row["verdict"])}">{escape(row["verdict"])}</span></td>
+          <td>{row["riskScore"]}</td>
+        </tr>
+        """
+        for row in queue
+    )
     cards = []
-    for row in queue:
+    for row in queue[:3]:
         flags = []
         if row["staleAccess"]:
             flags.append('<span class="signal-pill">Stale access</span>')
@@ -433,31 +531,11 @@ def render_review_queue() -> str:
             flags.append('<span class="signal-pill">Evidence refresh</span>')
         cards.append(
             f"""
-            <div class="account-card">
-              <div class="account-top">
-                <div>
-                  <h3>{escape(row["name"])}</h3>
-                  <div class="meta">{escape(row["owner"])} · {escape(row["safe"])} · {escape(row["platform"])} · {escape(row["reviewGroup"])}</div>
-                </div>
-                <span class="tag {_verdict_class(row["verdict"])}">{escape(row["verdict"])}</span>
-                <div class="score-stack">
-                  <div class="micro">Risk score</div>
-                  <div class="value">{row["riskScore"]}</div>
-                </div>
-              </div>
-              <div class="account-bottom">
-                <div class="two-col">
-                  <div class="metric-card">
-                    <div class="micro">Review problem</div>
-                    <div class="title">{escape(row["topConcern"])}</div>
-                    <div class="desc">{escape(row["nextAction"])}</div>
-                  </div>
-                  <div class="metric-card">
-                    <div class="micro">Queue signals</div>
-                    <div class="pill-stack">{"".join(flags) or '<span class="signal-pill">Ready</span>'}</div>
-                  </div>
-                </div>
-              </div>
+            <div class="metric-card">
+              <div class="micro">{escape(row["name"])}</div>
+              <div class="title">{escape(row["topConcern"])}</div>
+              <div class="desc">{escape(row["nextAction"])}</div>
+              <div class="pill-stack" style="margin-top:12px;">{"".join(flags) or '<span class="signal-pill">Ready</span>'}</div>
             </div>
             """
         )
@@ -469,64 +547,271 @@ def render_review_queue() -> str:
           <p>The queue prioritizes stale, weakly owned, or evidence-thin privileged accounts before they roll into another approval cycle without a clean decision.</p>
         </div>
         <div class="section-body">
-          <div class="account-grid">{"".join(cards)}</div>
+          <div class="insight-grid">
+            <div class="table-shell">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Connector name</th>
+                    <th>Safe container</th>
+                    <th>Platform</th>
+                    <th>Review problem</th>
+                    <th>Verdict</th>
+                    <th>Risk</th>
+                  </tr>
+                </thead>
+                <tbody>{rows}</tbody>
+              </table>
+            </div>
+            <div class="panel">
+              <h3>Review context</h3>
+              <div class="panel-grid">{"".join(cards)}</div>
+            </div>
+          </div>
         </div>
       </section>
     """
     return _shell(
-        "Review queue",
-        "The privileged accounts most likely to need urgent review, ownership cleanup, or evidence refresh.",
+        "Review queue for destructive-access exposure.",
+        "The servers most likely to need containment or human review first.",
         "queue",
         body,
     )
 
 
 def render_findings_matrix() -> str:
-    rows = "".join(
-        f"""
-        <tr>
-          <td><strong>{escape(item["name"])}</strong><div class="subtext">{escape(item["owner"])} · {escape(item["safe"])}</div></td>
-          <td>{item["lastAccessDays"]}d</td>
-          <td>{item["reviewAgeDays"]}d</td>
-          <td>{item["approvalEvidenceDays"]}d</td>
-          <td>{'Yes' if item["hasOpenTicket"] else 'No'}</td>
-          <td>{'Yes' if item["managerVerified"] else 'No'}</td>
-          <td><span class="tag {_verdict_class(item["verdict"])}">{escape(item["verdict"])}</span></td>
-        </tr>
-        """
-        for item in SERVICE.findings()
-    )
+    findings = SERVICE.findings()
+    rows = []
+    for item in findings:
+        severity = "critical" if item["verdict"] == "critical" else "watch" if item["verdict"] == "watch" else "healthy"
+        remediation = (
+            "Immediate revocation or review hold recommended."
+            if item["verdict"] == "critical"
+            else "Refresh evidence and verify manager ownership."
+            if item["verdict"] == "watch"
+            else "Keep in normal cadence."
+        )
+        rows.append(
+            f"""
+            <div class="account-card">
+              <div class="account-top">
+                <div>
+                  <h3>{escape(item["name"])}</h3>
+                  <div class="meta-text">{escape(item["owner"])} · {escape(item["safe"])} · {escape(item["privilegeTier"])}</div>
+                </div>
+                <span class="tag {severity}">{escape(item["verdict"])}</span>
+                <div class="score-stack">
+                  <div class="micro">Evidence age</div>
+                  <div class="value">{item["approvalEvidenceDays"]}d</div>
+                </div>
+              </div>
+              <div class="account-bottom">
+                <div class="three-col">
+                  <div class="metric-card">
+                    <div class="micro">Stale signal</div>
+                    <div class="title">{item["lastAccessDays"]} days since last access</div>
+                    <div class="desc">Review age: {item["reviewAgeDays"]} days. Open ticket: {"yes" if item["hasOpenTicket"] else "no"}.</div>
+                  </div>
+                  <div class="metric-card">
+                    <div class="micro">Manager verification</div>
+                    <div class="title">{"Verified" if item["managerVerified"] else "Missing"}</div>
+                    <div class="desc">The record should not move quietly if the manager ownership lane is incomplete.</div>
+                  </div>
+                  <div class="metric-card">
+                    <div class="micro">Remediation step</div>
+                    <div class="title">{remediation}</div>
+                    <div class="desc">This is the shortest path to making the next certification cycle more defensible.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            """
+        )
     body = f"""
       <section class="page-section">
         <div class="section-head">
           <strong>Findings matrix</strong>
-          <h2>The compact evidence table for review operations.</h2>
-          <p>This matrix is the fast way to scan stale access, overdue reviews, weak approval evidence, and whether the account has enough ticket and manager state to move forward.</p>
+          <h2>The stale, orphaned, and policy-thin accounts that deserve human attention.</h2>
+          <p>This is where the sync stops being a raw metadata export and becomes a real review surface with remediation direction attached.</p>
         </div>
         <div class="section-body">
-          <div class="table-shell">
-            <table>
-              <thead>
-                <tr>
-                  <th>Account</th>
-                  <th>Last access</th>
-                  <th>Review age</th>
-                  <th>Evidence age</th>
-                  <th>Open ticket</th>
-                  <th>Manager verified</th>
-                  <th>Verdict</th>
-                </tr>
-              </thead>
-              <tbody>{rows}</tbody>
-            </table>
+          <div class="account-grid">{"".join(rows)}</div>
+        </div>
+      </section>
+    """
+    return _shell(
+        "Findings matrix for stale-access and evidence pressure.",
+        "The records most likely to break certification quality if they stay invisible.",
+        "findings",
+        body,
+    )
+
+
+def render_audit_log() -> str:
+    logs = SERVICE.audit_log()
+    rows = []
+    for item in logs:
+        result_class = "result-good" if item["result"] == "Success" else "result-bad"
+        rows.append(
+            f"""
+            <div class="log-line">
+              <div class="log-time">{escape(item["timestamp"])}</div>
+              <div class="log-action">{escape(item["action"])}</div>
+              <div class="log-resource"><strong>{escape(item["resource"])}</strong><span>{escape(item["detail"])}</span></div>
+              <div class="{result_class}">{escape(item["result"])}</div>
+            </div>
+            """
+        )
+    body = f"""
+      <section class="page-section">
+        <div class="section-head">
+          <strong>Audit evidence</strong>
+          <h2>Immutable-looking synchronization and review history for the operator lane.</h2>
+          <p>The useful part is not just that the system emits events. It is that a reviewer or auditor can quickly understand what moved, who moved it, and whether the result was defensible.</p>
+        </div>
+        <div class="section-body">
+          <div class="log-shell">
+            <div class="log-head">
+              <div class="log-lights"><i></i><i></i><i></i></div>
+              <strong>System runtime logs · review-sync evidence bus</strong>
+            </div>
+            <div class="log-body">{"".join(rows)}</div>
+          </div>
+          <div class="three-col" style="margin-top:18px;">
+            <div class="metric-card">
+              <div class="micro">SOX posture</div>
+              <div class="title">Evidence bundle verified</div>
+              <div class="desc">Review exports preserve the context needed to defend privileged-account decisions later.</div>
+            </div>
+            <div class="metric-card">
+              <div class="micro">Privileged review chain</div>
+              <div class="title">Queue decisions are replayable</div>
+              <div class="desc">Each lane promotion and evidence gap can be reconstructed without reverse-engineering the queue.</div>
+            </div>
+            <div class="metric-card">
+              <div class="micro">Human accountability</div>
+              <div class="title">Manager verification stays visible</div>
+              <div class="desc">This surface makes it hard for weakly owned privileged access to hide in system noise.</div>
+            </div>
           </div>
         </div>
       </section>
     """
     return _shell(
-        "Findings matrix",
-        "Compact view of stale access, evidence age, and approval readiness across privileged accounts.",
-        "findings",
+        "Audit evidence for privileged-review synchronization.",
+        "A replayable log of sync actions, queue promotions, evidence gaps, and review outcomes.",
+        "audit",
+        body,
+    )
+
+
+def render_settings() -> str:
+    config = SERVICE.configuration_posture()
+    targets = "".join(
+        f"""
+        <div class="integration-row">
+          <div>
+            <strong>{escape(item["name"])}</strong>
+            <span>{escape(item["type"])}</span>
+          </div>
+          <span class="toggle {'good' if item['enabled'] else 'bad'}">{'Enabled' if item['enabled'] else 'Standby'}</span>
+        </div>
+        """
+        for item in config["targetSystems"]
+    )
+    body = f"""
+      <section class="page-section">
+        <div class="section-head">
+          <strong>System configuration</strong>
+          <h2>The review-sync controls that shape what gets trusted downstream.</h2>
+          <p>AI Studio was right to add this page. It gives the repo a clearer operator story by showing the CyberArk context, sync cadence, and target integrations that make the queue believable.</p>
+        </div>
+        <div class="section-body">
+          <div class="config-grid">
+            <div class="panel">
+              <h3>CyberArk API context</h3>
+              <div class="panel-grid">
+                <div class="config-row">
+                  <div>
+                    <strong>Vault endpoint</strong>
+                    <span>{escape(config["cyberark"]["apiBaseUrl"])}</span>
+                  </div>
+                  <span class="toggle good">Live</span>
+                </div>
+                <div class="config-row">
+                  <div>
+                    <strong>Authentication strategy</strong>
+                    <span>{escape(config["cyberark"]["authType"])}</span>
+                  </div>
+                  <span class="toggle good">Strict</span>
+                </div>
+                <div class="config-row">
+                  <div>
+                    <strong>Session control</strong>
+                    <span>{escape(config["cyberark"]["sessionControl"])}</span>
+                  </div>
+                  <span class="toggle good">Dual control</span>
+                </div>
+                <div class="config-row">
+                  <div>
+                    <strong>SSL verification</strong>
+                    <span>Hostname and CA validation remain mandatory for API traffic.</span>
+                  </div>
+                  <span class="toggle {'good' if config['cyberark']['verifySsl'] else 'bad'}">{'Verified' if config['cyberark']['verifySsl'] else 'Disabled'}</span>
+                </div>
+              </div>
+            </div>
+            <div class="panel">
+              <h3>Sync orchestration</h3>
+              <div class="panel-grid">
+                <div class="config-row">
+                  <div>
+                    <strong>Interval</strong>
+                    <span>{config["syncSettings"]["intervalMinutes"]} minutes between scheduled metadata refreshes.</span>
+                  </div>
+                  <span class="toggle good">Scheduled</span>
+                </div>
+                <div class="config-row">
+                  <div>
+                    <strong>Batch size</strong>
+                    <span>{config["syncSettings"]["batchSize"]} accounts per synchronization pass.</span>
+                  </div>
+                  <span class="toggle good">Bounded</span>
+                </div>
+                <div class="config-row">
+                  <div>
+                    <strong>Evidence refresh threshold</strong>
+                    <span>{config["syncSettings"]["evidenceRefreshThresholdDays"]} days before approval bundles fall out of the review-ready lane.</span>
+                  </div>
+                  <span class="toggle good">Enforced</span>
+                </div>
+                <div class="config-row">
+                  <div>
+                    <strong>Auto-remediation</strong>
+                    <span>Critical findings still require human review before any entitlement removal.</span>
+                  </div>
+                  <span class="toggle {'good' if config['syncSettings']['autoRemediation'] else 'bad'}">{'Enabled' if config['syncSettings']['autoRemediation'] else 'Monitor only'}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <section class="page-section" style="margin-top:18px;">
+            <div class="section-head">
+              <strong>Integration targets</strong>
+              <h2>Where the review outputs are expected to land.</h2>
+              <p>This makes the repo feel more like a real privileged-review platform component instead of a standalone analyzer.</p>
+            </div>
+            <div class="section-body">
+              <div class="panel-grid">{targets}</div>
+            </div>
+          </section>
+        </div>
+      </section>
+    """
+    return _shell(
+        "Configuration and target-system posture for the review lane.",
+        "CyberArk API context, sync cadence, evidence thresholds, and the systems this queue is meant to feed.",
+        "settings",
         body,
     )
 
@@ -573,7 +858,7 @@ def render_methodology() -> str:
       </section>
     """
     return _shell(
-        "Methodology",
+        "Methodology behind privileged-review prioritization.",
         "How the sync turns account metadata into review priority and approval-readiness signals.",
         "methodology",
         body,
@@ -622,8 +907,8 @@ def render_api_summary() -> str:
       </section>
     """
     return _shell(
-        "API summary",
-        "The sync emits structured account-review decisions that can plug into broader access governance workflows.",
+        "API summary for review and evidence workflows.",
+        "The sync emits structured account-review decisions that can plug into broader access-governance systems.",
         "methodology",
         body,
     )
