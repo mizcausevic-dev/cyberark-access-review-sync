@@ -40,7 +40,7 @@ CyberArk is usually very good at vaulting and protecting privileged access. The 
 ## Local run
 
 ```powershell
-Set-Location "C:\Users\chaus\dev\repos\cyberark-access-review-sync"
+cd cyberark-access-review-sync
 py -3.11 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe -m app.main
