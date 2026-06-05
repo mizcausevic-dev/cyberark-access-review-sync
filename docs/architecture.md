@@ -11,7 +11,7 @@ It focuses on the access-governance questions that usually arrive too late:
 
 ## Core model
 
-The service works from a seeded inventory in [app/data/sample_review_data.json](/C:/Users/chaus/dev/repos/cyberark-access-review-sync/app/data/sample_review_data.json).
+The service works from a seeded inventory in [app/data/sample_review_data.json](../app/data/sample_review_data.json).
 
 Each account carries:
 
@@ -27,7 +27,7 @@ Each account carries:
 
 ## Evaluation flow
 
-The review-sync service in [app/services/review_sync_service.py](/C:/Users/chaus/dev/repos/cyberark-access-review-sync/app/services/review_sync_service.py) computes:
+The review-sync service in [app/services/review_sync_service.py](../app/services/review_sync_service.py) computes:
 
 1. risk score
 2. verdict: `healthy`, `watch`, or `critical`
@@ -42,7 +42,7 @@ The score deliberately mixes stale use, weak ownership, overdue reviews, and thi
 
 ## UI surfaces
 
-The HTML proof layer in [app/render.py](/C:/Users/chaus/dev/repos/cyberark-access-review-sync/app/render.py) exposes:
+The HTML proof layer in [app/render.py](../app/render.py) exposes:
 
 - `/`
   Overview of account pressure, owner gaps, stale use, and top review lanes.
@@ -57,13 +57,13 @@ The HTML proof layer in [app/render.py](/C:/Users/chaus/dev/repos/cyberark-acces
 
 ## API layer
 
-The FastAPI app in [app/main.py](/C:/Users/chaus/dev/repos/cyberark-access-review-sync/app/main.py) exposes both operator-facing views and machine-consumable endpoints so the same record can feed dashboards, review platforms, or audit workflows.
+The FastAPI app in [app/main.py](../app/main.py) exposes both operator-facing views and machine-consumable endpoints so the same record can feed dashboards, review platforms, or audit workflows.
 
 ## Validation
 
 The repo includes:
 
-- unit tests in [tests/test_review_sync_service.py](/C:/Users/chaus/dev/repos/cyberark-access-review-sync/tests/test_review_sync_service.py)
-- smoke checks in [scripts/smoke_check.py](/C:/Users/chaus/dev/repos/cyberark-access-review-sync/scripts/smoke_check.py)
-- proof asset generation in [scripts/render_readme_assets.py](/C:/Users/chaus/dev/repos/cyberark-access-review-sync/scripts/render_readme_assets.py)
-- GitHub Actions CI in [.github/workflows/ci.yml](/C:/Users/chaus/dev/repos/cyberark-access-review-sync/.github/workflows/ci.yml)
+- unit tests in [tests/test_review_sync_service.py](../tests/test_review_sync_service.py)
+- smoke checks in [scripts/smoke_check.py](../scripts/smoke_check.py)
+- proof asset generation in [scripts/render_readme_assets.py](../scripts/render_readme_assets.py)
+- GitHub Actions CI in [.github/workflows/ci.yml](../.github/workflows/ci.yml)
